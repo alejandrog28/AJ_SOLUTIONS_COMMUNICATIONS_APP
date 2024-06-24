@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Media;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
 using System.IO;
@@ -22,6 +15,9 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
         SoundPlayer ReproductoWav;
         public bool flagReporte = false;
 
+        private string path = @"C:\Registros";
+        private string pathAudio = "";
+
         public Form1()
         {
             InitializeComponent();
@@ -32,29 +28,52 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
         [DllImport("winmm.dll", EntryPoint = "mciSendStringA", ExactSpelling = true, CharSet = CharSet.Ansi, SetLastError = true)]
         private static extern int Grabar(string Comando, string StringRetono, int Longitud, int hwndCallback);
 
+
+
+
         private void Form1_Load(object sender, EventArgs e)
         {
             lblState.Text = "No Receive Data";
             pictureBoxledSerial.Image = Properties.Resources.green_led_off_md;
 
-            
+            btnOpen.Enabled = false;
+            btnClose.Enabled = false;
 
-            try
-            {
-                //Get all ports
-                string[] ports = SerialPort.GetPortNames();
-                cbxPort.Items.AddRange(ports);
-                //cbxPort.SelectedIndex = 0;
-                serialPort1.BaudRate = 115200;
-                btnClose.Enabled = false;
-                serialPort1.ReadTimeout = 500;
-                serialPort1.WriteTimeout = 500; 
+            btnSpeaker.Enabled = false;
+            btnMicrophone.Enabled = false;
 
-            }
-            catch (Exception ex)
+           
+        }
+
+        public bool ValidateSticker()
+        {
+            string numberSticker = txtNumeroSticker.Text;
+
+            if (!Directory.Exists(path))
             {
-                MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Directory.CreateDirectory(path);
             }
+
+            if (!string.IsNullOrEmpty(numberSticker))
+            {
+                string nameTxt = $@"{path}\Report_Audio_Convert" + "_" + "OP38487" + "_" + "[" + numberSticker + "]" + "_" + DateTime.Now.Day + "_" + DateTime.Now.Month + "_" + DateTime.Now.Year + ".txt";
+                string nameAudio = $@"\Audio_{numberSticker}.wav";
+
+                if (File.Exists(nameTxt)||File.Exists($"{path}{numberSticker}"))
+                {
+                    MessageBox.Show("Ya este numero de sticker ya existe en la carpeta registros");
+
+                    return false;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Debe ingresar un numero de sticker para realizar la prueba", "Mensanje", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return false;
+            }
+
+            return true;
         }
 
         private void btnOpen_Click(object sender, EventArgs e)
@@ -65,11 +84,17 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             btnClose.Enabled = true;
             try
             {
-                //Open port
                 serialPort1.PortName = cbxPort.Text;
-                serialPort1.Open();
 
+                if (!serialPort1.IsOpen)
+                {
+                    //Open port
+                    serialPort1.Open();
+                }
 
+                btnSpeaker.Enabled = true;
+               
+                
             }
             catch (Exception ex)
             {
@@ -112,31 +137,30 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
 
         private void btnSpeaker_Click(object sender, EventArgs e)
         {
-            
+            if (!ValidateSticker())
+            {
+                return;
+            }
 
             btnSpeaker.Enabled = false;
             btnMicrophone.Enabled = true;
-
-
 
             try
             {
                 if (serialPort1.IsOpen)
                 {
-
                     serialPort1.WriteLine("A1");
                     Thread.Sleep(100);
-
-
                 }
-
-                
+                else
+                {
+                    MessageBox.Show("puerto serial no disponible");
+                    return;
+                }
 
                 Thread primerHilo = new Thread(Beep);
                 primerHilo.Start();
-
-                btnSpeaker.Enabled = true;
-
+                
             }
             catch (Exception ex)
             {
@@ -149,9 +173,9 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
         private void btnMicrophone_Click(object sender, EventArgs e)
         {
 
-            btnSpeaker.Enabled = true;
             btnMicrophone.Enabled = false;
-            
+            pathAudio = "";
+
 
             try
             {
@@ -161,30 +185,21 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
                     Thread.Sleep(100);
                 }
 
-              
 
                 Grabar("open new Type waveaudio Alias recsound", "", 0, 0);
                 Grabar("record recsound", "", 0, 0);
 
-
                 Thread.Sleep(100);
 
-                UrlReproductor.Text = "";
                 ReproductoWav.Stop();
+                pathAudio = $@"{path}\Audio_{txtNumeroSticker.Text}.wav";
 
-                SaveFileDialog CajaDeDiaologoGuardar = new SaveFileDialog();
-                CajaDeDiaologoGuardar.AddExtension = true;
-                CajaDeDiaologoGuardar.FileName = "Audio_.wav";
-                CajaDeDiaologoGuardar.Filter = "Sonido (*.wav)|*.wav";
-                CajaDeDiaologoGuardar.ShowDialog();
-                if (!string.IsNullOrEmpty(CajaDeDiaologoGuardar.FileName))
+                if (!string.IsNullOrEmpty(txtNumeroSticker.Text))
                 {
-                    UrlReproductor.Text = CajaDeDiaologoGuardar.FileName;
 
-
-                    Grabar("save recsound " + CajaDeDiaologoGuardar.FileName, "", 0, 0);
+                    Grabar("save recsound " + pathAudio, "", 0, 0);
                     Grabar("close recsound", "", 0, 0);
-                    MessageBox.Show("Archivo Guardado en:" + CajaDeDiaologoGuardar.FileName);
+                    MessageBox.Show("Archivo Guardado en:" + pathAudio);
 
                 }
 
@@ -275,7 +290,7 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
 
         private void btnPlay_Click(object sender, EventArgs e)
         {
-            ReproductoWav.SoundLocation = UrlReproductor.Text;
+            ReproductoWav.SoundLocation = pathAudio;
             ReproductoWav.Play();
             txtReceive.Clear();
         }
@@ -293,11 +308,9 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
 
             string sticker = txtNumeroSticker.Text;
 
-            string path = @"C:\REPORTES_AJ_SOLUTIONS";
+            string nombre = @"Report_Audio_Convert" + "_" + "OP38487" + "_" +"[" + sticker + "]" + "_" + DateTime.Now.Day + "_" + DateTime.Now.Month + "_" + DateTime.Now.Year + ".txt";
 
-            string nombre = @"\Report_Audio_Convert" + "-" + "OP38067" + "-" +"[" + sticker + "]" + "-" + DateTime.Now.Day + "_" + DateTime.Now.Month + "_" + DateTime.Now.Year + ".txt";
-
-            string completo = path + nombre;
+            string completo = path + @"\" + nombre;
 
             StreamWriter Escribir = File.CreateText(completo);
             Escribir.WriteLine("############# REPORTE AUDIO - " + sticker + "###########");
@@ -308,9 +321,35 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             Thread.Sleep(2000);
             Escribir.Close();
 
-            
+            MessageBox.Show("REPORTE GENERADO");
+        }
 
-           // MessageBox.Show("REPORTE GENERADO");
+        private void cbxPort_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            btnOpen.Enabled = true;
+        }
+
+        private void cbxPort_Click(object sender, EventArgs e)
+        {
+
+            try
+            {
+                cbxPort.Items.Clear();  
+
+                //Get all ports
+                string[] ports = SerialPort.GetPortNames();
+                cbxPort.Items.AddRange(ports);
+                //cbxPort.SelectedIndex = 0;
+                serialPort1.BaudRate = 115200;
+
+                serialPort1.ReadTimeout = 500;
+                serialPort1.WriteTimeout = 500;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

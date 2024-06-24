@@ -42,18 +42,18 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             this.cbxPort = new System.Windows.Forms.ComboBox();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.gpbBeep = new System.Windows.Forms.GroupBox();
-            this.btnPlay = new System.Windows.Forms.Button();
-            this.UrlReproductor = new System.Windows.Forms.Label();
-            this.txtNumeroSticker = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.txtNumeroSticker = new System.Windows.Forms.TextBox();
+            this.btnPlay = new System.Windows.Forms.Button();
             this.gpbPort.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxledSerial)).BeginInit();
-            this.gpbBeep.SuspendLayout();
             this.SuspendLayout();
             // 
             // gpbPort
             // 
+            this.gpbPort.Controls.Add(this.btnPlay);
+            this.gpbPort.Controls.Add(this.label1);
+            this.gpbPort.Controls.Add(this.txtNumeroSticker);
             this.gpbPort.Controls.Add(this.pictureBoxledSerial);
             this.gpbPort.Controls.Add(this.btnMicrophone);
             this.gpbPort.Controls.Add(this.btnSpeaker);
@@ -66,7 +66,7 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             this.gpbPort.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gpbPort.Location = new System.Drawing.Point(12, 12);
             this.gpbPort.Name = "gpbPort";
-            this.gpbPort.Size = new System.Drawing.Size(324, 321);
+            this.gpbPort.Size = new System.Drawing.Size(743, 324);
             this.gpbPort.TabIndex = 0;
             this.gpbPort.TabStop = false;
             this.gpbPort.Text = "AJ Solutions";
@@ -83,7 +83,7 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             // 
             // btnMicrophone
             // 
-            this.btnMicrophone.Location = new System.Drawing.Point(178, 115);
+            this.btnMicrophone.Location = new System.Drawing.Point(213, 195);
             this.btnMicrophone.Name = "btnMicrophone";
             this.btnMicrophone.Size = new System.Drawing.Size(129, 23);
             this.btnMicrophone.TabIndex = 7;
@@ -93,7 +93,7 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             // 
             // btnSpeaker
             // 
-            this.btnSpeaker.Location = new System.Drawing.Point(22, 115);
+            this.btnSpeaker.Location = new System.Drawing.Point(22, 195);
             this.btnSpeaker.Name = "btnSpeaker";
             this.btnSpeaker.Size = new System.Drawing.Size(94, 23);
             this.btnSpeaker.TabIndex = 6;
@@ -103,11 +103,11 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             // 
             // txtReceive
             // 
-            this.txtReceive.Location = new System.Drawing.Point(22, 144);
+            this.txtReceive.Location = new System.Drawing.Point(420, 24);
             this.txtReceive.Multiline = true;
             this.txtReceive.Name = "txtReceive";
             this.txtReceive.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtReceive.Size = new System.Drawing.Size(285, 171);
+            this.txtReceive.Size = new System.Drawing.Size(303, 289);
             this.txtReceive.TabIndex = 0;
             // 
             // lblState
@@ -120,7 +120,7 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             // 
             // btnOpen
             // 
-            this.btnOpen.Location = new System.Drawing.Point(22, 86);
+            this.btnOpen.Location = new System.Drawing.Point(22, 136);
             this.btnOpen.Name = "btnOpen";
             this.btnOpen.Size = new System.Drawing.Size(75, 23);
             this.btnOpen.TabIndex = 3;
@@ -130,7 +130,7 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(232, 86);
+            this.btnClose.Location = new System.Drawing.Point(253, 136);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 2;
@@ -143,17 +143,19 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             this.lblPort.AutoSize = true;
             this.lblPort.Location = new System.Drawing.Point(92, 49);
             this.lblPort.Name = "lblPort";
-            this.lblPort.Size = new System.Drawing.Size(89, 16);
+            this.lblPort.Size = new System.Drawing.Size(88, 16);
             this.lblPort.TabIndex = 1;
             this.lblPort.Text = "Port Serial: ";
             // 
             // cbxPort
             // 
             this.cbxPort.FormattingEnabled = true;
-            this.cbxPort.Location = new System.Drawing.Point(187, 41);
+            this.cbxPort.Location = new System.Drawing.Point(200, 41);
             this.cbxPort.Name = "cbxPort";
-            this.cbxPort.Size = new System.Drawing.Size(121, 24);
+            this.cbxPort.Size = new System.Drawing.Size(175, 24);
             this.cbxPort.TabIndex = 0;
+            this.cbxPort.SelectedIndexChanged += new System.EventHandler(this.cbxPort_SelectedIndexChanged);
+            this.cbxPort.Click += new System.EventHandler(this.cbxPort_Click);
             // 
             // serialPort1
             // 
@@ -164,23 +166,25 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // gpbBeep
+            // label1
             // 
-            this.gpbBeep.Controls.Add(this.label1);
-            this.gpbBeep.Controls.Add(this.txtNumeroSticker);
-            this.gpbBeep.Controls.Add(this.btnPlay);
-            this.gpbBeep.Controls.Add(this.UrlReproductor);
-            this.gpbBeep.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gpbBeep.Location = new System.Drawing.Point(343, 13);
-            this.gpbBeep.Name = "gpbBeep";
-            this.gpbBeep.Size = new System.Drawing.Size(412, 314);
-            this.gpbBeep.TabIndex = 1;
-            this.gpbBeep.TabStop = false;
-            this.gpbBeep.Text = "URL ";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(19, 90);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(174, 16);
+            this.label1.TabIndex = 11;
+            this.label1.Text = "NUMERO DE STICKER: ";
+            // 
+            // txtNumeroSticker
+            // 
+            this.txtNumeroSticker.Location = new System.Drawing.Point(200, 84);
+            this.txtNumeroSticker.Name = "txtNumeroSticker";
+            this.txtNumeroSticker.Size = new System.Drawing.Size(175, 22);
+            this.txtNumeroSticker.TabIndex = 10;
             // 
             // btnPlay
             // 
-            this.btnPlay.Location = new System.Drawing.Point(132, 85);
+            this.btnPlay.Location = new System.Drawing.Point(105, 255);
             this.btnPlay.Name = "btnPlay";
             this.btnPlay.Size = new System.Drawing.Size(75, 23);
             this.btnPlay.TabIndex = 9;
@@ -188,36 +192,11 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             this.btnPlay.UseVisualStyleBackColor = true;
             this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
             // 
-            // UrlReproductor
-            // 
-            this.UrlReproductor.AutoSize = true;
-            this.UrlReproductor.Location = new System.Drawing.Point(17, 43);
-            this.UrlReproductor.Name = "UrlReproductor";
-            this.UrlReproductor.Size = new System.Drawing.Size(0, 16);
-            this.UrlReproductor.TabIndex = 8;
-            // 
-            // txtNumeroSticker
-            // 
-            this.txtNumeroSticker.Location = new System.Drawing.Point(198, 146);
-            this.txtNumeroSticker.Name = "txtNumeroSticker";
-            this.txtNumeroSticker.Size = new System.Drawing.Size(100, 22);
-            this.txtNumeroSticker.TabIndex = 10;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(17, 152);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(175, 16);
-            this.label1.TabIndex = 11;
-            this.label1.Text = "NUMERO DE STICKER: ";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(767, 337);
-            this.Controls.Add(this.gpbBeep);
             this.Controls.Add(this.gpbPort);
             this.Name = "Form1";
             this.Text = "AJ SOLUTIONS APP";
@@ -226,8 +205,6 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             this.gpbPort.ResumeLayout(false);
             this.gpbPort.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxledSerial)).EndInit();
-            this.gpbBeep.ResumeLayout(false);
-            this.gpbBeep.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -245,9 +222,7 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
         private System.Windows.Forms.Button btnSpeaker;
         private System.Windows.Forms.Button btnMicrophone;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.GroupBox gpbBeep;
         private System.Windows.Forms.PictureBox pictureBoxledSerial;
-        private System.Windows.Forms.Label UrlReproductor;
         private System.Windows.Forms.Button btnPlay;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtNumeroSticker;
