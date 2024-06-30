@@ -67,12 +67,6 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
                 string nameTxt = $@"{path}\Report_Audio_Convert" + "_" + "OP38487" + "_" + "[" + numberSticker + "]" + "_" + DateTime.Now.Day + "_" + DateTime.Now.Month + "_" + DateTime.Now.Year + ".txt";
                 string nameAudio = $@"{path}\Audio_{numberSticker}.wav";
 
-                if (File.Exists(nameTxt))
-                {
-                    File.Delete(nameTxt);
-
-                }
-
                 if (File.Exists(nameAudio))
                 {
                     MessageBox.Show("Este numero de sticker ya existe en la carpeta registros,\nValide nuevamente.");
@@ -268,6 +262,7 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
                     string ID = valores[0];
 
                     string idCompare = "C";
+                    string idCompareAudio = "D";
 
 
                     if (String.Compare(ID, idCompare) == 0)
@@ -290,7 +285,10 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
                             btnMicrophone.Enabled = false;
                         }
                     }
-                    
+                    else if (String.Compare(ID, idCompareAudio) != 0)
+                    {
+                        txtReceive.Text = "";
+                    }
 
 
                     serialPort1.DiscardInBuffer();

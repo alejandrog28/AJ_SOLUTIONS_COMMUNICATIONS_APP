@@ -116,6 +116,7 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             // 
             // txtReceive
             // 
+            this.txtReceive.Enabled = false;
             this.txtReceive.Location = new System.Drawing.Point(420, 24);
             this.txtReceive.Multiline = true;
             this.txtReceive.Name = "txtReceive";
