@@ -11,7 +11,7 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
 {
     public partial class Form1 : Form
     {
-        
+
         SoundPlayer ReproductoWav;
         public bool flagReporte = false;
 
@@ -22,7 +22,7 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
         {
             InitializeComponent();
             ReproductoWav = new SoundPlayer();
-            
+
         }
 
         [DllImport("winmm.dll", EntryPoint = "mciSendStringA", ExactSpelling = true, CharSet = CharSet.Ansi, SetLastError = true)]
@@ -34,41 +34,55 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
         private void Form1_Load(object sender, EventArgs e)
         {
             lblState.Text = "No Receive Data";
-            pictureBoxledSerial.Image = Properties.Resources.green_led_off_md;
 
-            btnOpen.Enabled = false;
+            btnOpen.Enabled = true;
             btnClose.Enabled = false;
 
             btnSpeaker.Enabled = false;
             btnMicrophone.Enabled = false;
 
-           
+            btnNewTest.Enabled = false;
+
+
         }
 
-        public bool ValidateSticker()
+        public void ValidateDirectory()
         {
-            string numberSticker = txtNumeroSticker.Text;
 
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
+
             }
+
+        }
+
+        public bool ValidateSticker()
+        {
+
+            string numberSticker = txtNumeroSticker.Text;
 
             if (!string.IsNullOrEmpty(numberSticker))
             {
                 string nameTxt = $@"{path}\Report_Audio_Convert" + "_" + "OP38487" + "_" + "[" + numberSticker + "]" + "_" + DateTime.Now.Day + "_" + DateTime.Now.Month + "_" + DateTime.Now.Year + ".txt";
-                string nameAudio = $@"\Audio_{numberSticker}.wav";
+                string nameAudio = $@"{path}\Audio_{numberSticker}.wav";
 
-                if (File.Exists(nameTxt)||File.Exists($"{path}{numberSticker}"))
+                if (File.Exists(nameTxt))
                 {
-                    MessageBox.Show("Ya este numero de sticker ya existe en la carpeta registros");
+                    File.Delete(nameTxt);
+
+                }
+
+                if (File.Exists(nameAudio))
+                {
+                    MessageBox.Show("Este numero de sticker ya existe en la carpeta registros,\nValide nuevamente.");
 
                     return false;
                 }
             }
             else
             {
-                MessageBox.Show("Debe ingresar un numero de sticker para realizar la prueba", "Mensanje", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Debe ingresar un numero de sticker para realizar la prueba", "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 return false;
             }
@@ -78,6 +92,11 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
+
+            txtNumeroSticker.Clear();
+
+            ValidateDirectory();
+
             timer1.Start();
 
             btnOpen.Enabled = false;
@@ -93,8 +112,9 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
                 }
 
                 btnSpeaker.Enabled = true;
-               
-                
+
+
+
             }
             catch (Exception ex)
             {
@@ -104,13 +124,12 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
 
         private void btnClose_Click(object sender, EventArgs e)
         {
+            txtNumeroSticker.Clear();
             btnOpen.Enabled = true;
             btnClose.Enabled = false;
             try
             {
                 lblState.Text = "No Receive Data";
-                pictureBoxledSerial.Image = Properties.Resources.green_led_off_md;
-
                 serialPort1.Close();
 
 
@@ -137,6 +156,7 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
 
         private void btnSpeaker_Click(object sender, EventArgs e)
         {
+
             if (!ValidateSticker())
             {
                 return;
@@ -160,7 +180,9 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
 
                 Thread primerHilo = new Thread(Beep);
                 primerHilo.Start();
-                
+
+                btnSpeaker.Enabled = false;
+
             }
             catch (Exception ex)
             {
@@ -189,7 +211,9 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
                 Grabar("open new Type waveaudio Alias recsound", "", 0, 0);
                 Grabar("record recsound", "", 0, 0);
 
-                Thread.Sleep(100);
+
+                //Thread.Sleep(2000);
+                Thread.Sleep(7000);
 
                 ReproductoWav.Stop();
                 pathAudio = $@"{path}\Audio_{txtNumeroSticker.Text}.wav";
@@ -203,9 +227,11 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
 
                 }
 
-                
-                btnMicrophone.Enabled = true;
-                
+
+                btnMicrophone.Enabled = false;
+                btnSpeaker.Enabled = false;
+                btnNewTest.Enabled = true;
+
             }
             catch (Exception ex)
             {
@@ -228,6 +254,7 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
 
                     //Read text from port
                     string serialReceive = serialPort1.ReadExisting();
+
 
                     txtReceive.SelectionStart = txtReceive.TextLength;
                     txtReceive.ScrollToCaret();
@@ -255,17 +282,16 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
                         if (frequency >= 900 && frequency <= 1100 && resolution >= 0 && resolution <= 1023)
                         {
                             txtReceive.Text += "OK" + Environment.NewLine;
-                            pictureBoxledSerial.Image = Properties.Resources.green_led_on_md;
-
                         }
                         else
                         {
                             txtReceive.Text += "ERROR" + Environment.NewLine;
-                            pictureBoxledSerial.Image = Properties.Resources.green_led_off_md;
+                            btnSpeaker.Enabled = true;
+                            btnMicrophone.Enabled = false;
                         }
-     
-
                     }
+                    
+
 
                     serialPort1.DiscardInBuffer();
                     serialPort1.DiscardOutBuffer();
@@ -273,7 +299,7 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
 
                 Reporte();
 
-               
+
             }
             catch (Exception ex)
             {
@@ -288,10 +314,16 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             txtReceive.ScrollToCaret();
         }
 
-        private void btnPlay_Click(object sender, EventArgs e)
+        private void btnNewTest_Click(object sender, EventArgs e)
         {
-            ReproductoWav.SoundLocation = pathAudio;
-            ReproductoWav.Play();
+            //ReproductoWav.SoundLocation = pathAudio;
+            //ReproductoWav.Play();
+
+
+            btnMicrophone.Enabled = false;
+            btnSpeaker.Enabled = true;
+            btnNewTest.Enabled = false;
+
             txtReceive.Clear();
         }
 
@@ -302,13 +334,13 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
 
         }
 
-         public void Reporte()
+        public void Reporte()
         {
             //#################### CAPTURA DE DATOS - ARCHIVO TXT
 
             string sticker = txtNumeroSticker.Text;
 
-            string nombre = @"Report_Audio_Convert" + "_" + "OP38487" + "_" +"[" + sticker + "]" + "_" + DateTime.Now.Day + "_" + DateTime.Now.Month + "_" + DateTime.Now.Year + ".txt";
+            string nombre = @"Report_Audio_Convert" + "_" + "OP38487" + "_" + "[" + sticker + "]" + "_" + DateTime.Now.Day + "_" + DateTime.Now.Month + "_" + DateTime.Now.Year + ".txt";
 
             string completo = path + @"\" + nombre;
 
@@ -321,7 +353,7 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             Thread.Sleep(2000);
             Escribir.Close();
 
-            MessageBox.Show("REPORTE GENERADO");
+            // MessageBox.Show("REPORTE GENERADO");
         }
 
         private void cbxPort_SelectedIndexChanged(object sender, EventArgs e)
@@ -334,7 +366,7 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
 
             try
             {
-                cbxPort.Items.Clear();  
+                cbxPort.Items.Clear();
 
                 //Get all ports
                 string[] ports = SerialPort.GetPortNames();

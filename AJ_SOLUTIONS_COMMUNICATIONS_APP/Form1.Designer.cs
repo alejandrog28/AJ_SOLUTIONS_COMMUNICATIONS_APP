@@ -31,7 +31,9 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
         {
             this.components = new System.ComponentModel.Container();
             this.gpbPort = new System.Windows.Forms.GroupBox();
-            this.pictureBoxledSerial = new System.Windows.Forms.PictureBox();
+            this.btnNewTest = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtNumeroSticker = new System.Windows.Forms.TextBox();
             this.btnMicrophone = new System.Windows.Forms.Button();
             this.btnSpeaker = new System.Windows.Forms.Button();
             this.txtReceive = new System.Windows.Forms.TextBox();
@@ -42,19 +44,14 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             this.cbxPort = new System.Windows.Forms.ComboBox();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtNumeroSticker = new System.Windows.Forms.TextBox();
-            this.btnPlay = new System.Windows.Forms.Button();
             this.gpbPort.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxledSerial)).BeginInit();
             this.SuspendLayout();
             // 
             // gpbPort
             // 
-            this.gpbPort.Controls.Add(this.btnPlay);
+            this.gpbPort.Controls.Add(this.btnNewTest);
             this.gpbPort.Controls.Add(this.label1);
             this.gpbPort.Controls.Add(this.txtNumeroSticker);
-            this.gpbPort.Controls.Add(this.pictureBoxledSerial);
             this.gpbPort.Controls.Add(this.btnMicrophone);
             this.gpbPort.Controls.Add(this.btnSpeaker);
             this.gpbPort.Controls.Add(this.txtReceive);
@@ -71,15 +68,31 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             this.gpbPort.TabStop = false;
             this.gpbPort.Text = "AJ Solutions";
             // 
-            // pictureBoxledSerial
+            // btnNewTest
             // 
-            this.pictureBoxledSerial.Image = global::AJ_SOLUTIONS_COMMUNICATIONS_APP.Properties.Resources.green_led_off_md;
-            this.pictureBoxledSerial.Location = new System.Drawing.Point(22, 24);
-            this.pictureBoxledSerial.Name = "pictureBoxledSerial";
-            this.pictureBoxledSerial.Size = new System.Drawing.Size(30, 29);
-            this.pictureBoxledSerial.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBoxledSerial.TabIndex = 8;
-            this.pictureBoxledSerial.TabStop = false;
+            this.btnNewTest.Location = new System.Drawing.Point(127, 250);
+            this.btnNewTest.Name = "btnNewTest";
+            this.btnNewTest.Size = new System.Drawing.Size(107, 23);
+            this.btnNewTest.TabIndex = 9;
+            this.btnNewTest.Text = "NEW TEST";
+            this.btnNewTest.UseVisualStyleBackColor = true;
+            this.btnNewTest.Click += new System.EventHandler(this.btnNewTest_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(19, 150);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(174, 16);
+            this.label1.TabIndex = 11;
+            this.label1.Text = "NUMERO DE STICKER: ";
+            // 
+            // txtNumeroSticker
+            // 
+            this.txtNumeroSticker.Location = new System.Drawing.Point(200, 144);
+            this.txtNumeroSticker.Name = "txtNumeroSticker";
+            this.txtNumeroSticker.Size = new System.Drawing.Size(175, 22);
+            this.txtNumeroSticker.TabIndex = 10;
             // 
             // btnMicrophone
             // 
@@ -120,7 +133,7 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             // 
             // btnOpen
             // 
-            this.btnOpen.Location = new System.Drawing.Point(22, 136);
+            this.btnOpen.Location = new System.Drawing.Point(200, 80);
             this.btnOpen.Name = "btnOpen";
             this.btnOpen.Size = new System.Drawing.Size(75, 23);
             this.btnOpen.TabIndex = 3;
@@ -130,7 +143,7 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(253, 136);
+            this.btnClose.Location = new System.Drawing.Point(300, 80);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 2;
@@ -166,32 +179,6 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(19, 90);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(174, 16);
-            this.label1.TabIndex = 11;
-            this.label1.Text = "NUMERO DE STICKER: ";
-            // 
-            // txtNumeroSticker
-            // 
-            this.txtNumeroSticker.Location = new System.Drawing.Point(200, 84);
-            this.txtNumeroSticker.Name = "txtNumeroSticker";
-            this.txtNumeroSticker.Size = new System.Drawing.Size(175, 22);
-            this.txtNumeroSticker.TabIndex = 10;
-            // 
-            // btnPlay
-            // 
-            this.btnPlay.Location = new System.Drawing.Point(105, 255);
-            this.btnPlay.Name = "btnPlay";
-            this.btnPlay.Size = new System.Drawing.Size(75, 23);
-            this.btnPlay.TabIndex = 9;
-            this.btnPlay.Text = "PLAY";
-            this.btnPlay.UseVisualStyleBackColor = true;
-            this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -204,7 +191,6 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
             this.Load += new System.EventHandler(this.Form1_Load);
             this.gpbPort.ResumeLayout(false);
             this.gpbPort.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxledSerial)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -222,8 +208,7 @@ namespace AJ_SOLUTIONS_COMMUNICATIONS_APP
         private System.Windows.Forms.Button btnSpeaker;
         private System.Windows.Forms.Button btnMicrophone;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.PictureBox pictureBoxledSerial;
-        private System.Windows.Forms.Button btnPlay;
+        private System.Windows.Forms.Button btnNewTest;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtNumeroSticker;
     }
